@@ -25,21 +25,22 @@ pub async fn handle_get(pool: &PgPool) {
 
 /// Handle List all IDs
 pub async fn handle_list(pool: &PgPool) {
-    match password_repo::get_all_ids(pool).await {
-        Ok(ids) => {
-            if ids.is_empty() {
+    match password_repo::get_all(pool).await {
+        Ok(list) => {
+            if list.is_empty() {
                 println!("📭 No passwords saved yet!");
             } else {
-                println!("📋 Saved IDs:");
-                for id in ids {
-                    println!("  → {}", id);
+                println!("\n{:<20} {}", "ID", "PASSWORD");
+                println!("{}", "-".repeat(40));
+                for p in list {
+                    println!("{:<20} {}", p.id, p.password);
                 }
+                println!("{}", "-".repeat(40));
             }
         }
         Err(_) => println!("❌ Failed to fetch list!"),
     }
 }
-
 /// Handle Update — both ID and password can be updated
 pub async fn handle_update(pool: &PgPool) {
     let old_id       = read_input("Enter current ID to update: ");
