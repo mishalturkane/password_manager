@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔐 Password Manager V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --font-doodle: 'Poppins', sans-serif;
+      --font-body: 'Space Grotesk', sans-serif;
+      --color-paper: #fdf8f0;
+      --color-ink: #1a1209;
+      --color-pencil: #4a3f2f;
+      --color-accent: #e85d26;
+      --color-teal: #1a8a7a;
+      --color-blue: #2563c4;
+      --color-yellow: #f5c842;
+      --color-pink: #e84393;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-paper);
+      background-image:
+        linear-gradient(rgba(180,160,120,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180,160,120,0.15) 1px, transparent 1px);
+      background-size: 28px 28px;
+      min-height: 100vh;
+    }
+
+    /* Doodle border style */
+    .doodle-border {
+      border: 3px solid var(--color-ink);
+      border-radius: 2px 8px 3px 7px / 6px 2px 8px 3px;
+      box-shadow: 4px 4px 0px var(--color-ink);
+    }
+
+    .doodle-border-accent {
+      border: 3px solid var(--color-accent);
+      border-radius: 3px 7px 2px 8px / 7px 3px 6px 2px;
+      box-shadow: 4px 4px 0px var(--color-accent);
+    }
+
+    .doodle-border-teal {
+      border: 3px solid var(--color-teal);
+      border-radius: 6px 2px 8px 3px / 2px 8px 3px 7px;
+      box-shadow: 4px 4px 0px var(--color-teal);
+    }
+
+    /* Doodle input */
+    .doodle-input {
+      font-family: var(--font-body);
+      background: white;
+      border: 2px solid var(--color-pencil);
+      border-radius: 1px 6px 2px 5px / 5px 1px 6px 2px;
+      padding: 10px 14px;
+      width: 100%;
+      font-size: 1rem;
+      color: var(--color-ink);
+      outline: none;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .doodle-input:focus {
+      border-color: var(--color-accent);
+      box-shadow: 3px 3px 0px var(--color-accent);
+    }
+
+    .doodle-input::placeholder {
+      color: #b0a090;
+      font-style: italic;
+    }
+
+    /* Buttons */
+    .btn-doodle {
+      font-family: var(--font-doodle);
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: 2.5px solid var(--color-ink);
+      border-radius: 2px 8px 3px 7px / 6px 2px 8px 3px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      box-shadow: 3px 3px 0px var(--color-ink);
+      padding: 8px 20px;
+    }
+
+    .btn-doodle:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px var(--color-ink);
+    }
+
+    .btn-doodle:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--color-ink);
+    }
+
+    .btn-save   { background: var(--color-yellow); color: var(--color-ink); }
+    .btn-delete { background: #ff6b6b; color: white; border-color: #cc0000; box-shadow: 3px 3px 0 #cc0000; }
+    .btn-edit   { background: #b8f0b8; color: var(--color-ink); border-color: var(--color-teal); box-shadow: 3px 3px 0 var(--color-teal); }
+    .btn-copy   { background: #c8e8ff; color: var(--color-ink); border-color: var(--color-blue); box-shadow: 3px 3px 0 var(--color-blue); font-size: 0.9rem; padding: 5px 12px; }
+    .btn-gray   { background: #e8e0d0; color: var(--color-ink); }
+    .btn-update { background: var(--color-accent); color: white; border-color: #c04010; box-shadow: 3px 3px 0 #c04010; }
+
+    /* Password item */
+    .password-item {
+      background: white;
+      border: 2.5px solid var(--color-pencil);
+      border-radius: 1px 8px 2px 7px / 7px 1px 8px 2px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 3px 3px 0 var(--color-pencil);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .password-item:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--color-pencil);
+    }
+
+    .pass-badge {
+      font-family: 'Courier New', monospace;
+      background: #fff8e0;
+      border: 1.5px dashed var(--color-pencil);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 0.9rem;
+      color: var(--color-teal);
+      flex: 1;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,18,9,0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--color-ink);
+      color: var(--color-paper);
+      font-family: var(--font-doodle);
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 12px 22px;
+      border: 2.5px solid var(--color-ink);
+      border-radius: 2px 8px 3px 7px / 6px 2px 8px 3px;
+      box-shadow: 4px 4px 0 var(--color-accent);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; }
+
+    /* Tape effect on cards */
+    .tape::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 60px;
+      height: 22px;
+      background: rgba(245,200,66,0.7);
+      border: 1px solid rgba(180,140,0,0.3);
+      border-radius: 2px;
+    }
+
+    /* Wiggle animation */
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-0.5deg); }
+      50%       { transform: rotate(0.5deg); }
+    }
+
+    .wiggle { animation: wiggle 3s ease-in-out infinite; }
+
+    /* Star doodle */
+    .doodle-title::after {
+      content: ' ✏️';
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #b0a090;
+      font-family: var(--font-doodle);
+      font-size: 1.2rem;
+      padding: 24px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body class="py-10 px-4">
+
+  <!-- Header -->
+  <div class="max-w-2xl mx-auto mb-8 text-center">
+    <h1 class="text-5xl font-bold wiggle inline-block doodle-title" style="font-family:'Poppins',sans-serif; color:#1a1209;">
+      🔐 Password Manager
+    </h1>
+    <p style="font-family:'Space Grotesk',sans-serif; color:#7a6a5a; font-size:1rem; margin-top:4px;">
+      ~ your secret notebook ~
+    </p>
+  </div>
+
+  <div class="max-w-2xl mx-auto flex flex-col gap-7">
+
+    <!-- Add Password Card -->
+    <div class="relative bg-white doodle-border p-6 tape">
+      <h2 class="text-2xl font-bold mb-4" style="font-family:'Poppins',sans-serif; color:#e85d26;">
+        ➕ Add New Password
+      </h2>
+      <div class="flex flex-col gap-3">
+        <input
+          class="doodle-input"
+          type="text"
+          id="add-id"
+          placeholder="what's this for? (e.g. gmail, github)"
+        />
+        <input
+          class="doodle-input"
+          type="password"
+          id="add-pass"
+          placeholder="your secret password..."
+        />
+        <div>
+          <button class="btn-doodle btn-save" onclick="addPassword()">
+            💾 Save Password
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Manage Card -->
+    <div class="relative bg-white doodle-border-teal p-6 tape">
+      <h2 class="text-2xl font-bold mb-4" style="font-family:'Poppins',sans-serif; color:#1a8a7a;">
+        🔎 Search & Manage
+      </h2>
+
+      <!-- Search bar -->
+      <div class="flex gap-3 mb-5">
+        <input
+          class="doodle-input"
+          type="text"
+          id="search-input"
+          placeholder="search by name..."
+          oninput="searchPasswords()"
+          style="margin-bottom:0"
+        />
+        <button class="btn-doodle btn-gray whitespace-nowrap" onclick="loadAll()">
+          📋 All
+        </button>
+      </div>
+
+      <!-- Password list -->
+      <div id="password-list" class="flex flex-col gap-3">
+        <div class="empty-state">📭 loading your secrets...</div>
+      </div>
+    </div>
+
+  </div><!-- end container -->
+
+
+  <!-- Update Modal -->
+  <div id="update-modal" class="modal-overlay">
+    <div class="bg-white doodle-border-accent p-6 w-full max-w-sm mx-4 relative tape">
+      <h2 class="text-2xl font-bold mb-4" style="font-family:'Poppins',sans-serif; color:#e85d26;">
+        ✏️ Update Entry
+      </h2>
+      <input type="hidden" id="update-old-id" />
+      <div class="flex flex-col gap-3 mb-4">
+        <input
+          class="doodle-input"
+          type="text"
+          id="update-new-id"
+          placeholder="new ID name"
+        />
+        <input
+          class="doodle-input"
+          type="password"
+          id="update-new-pass"
+          placeholder="new password"
+        />
+      </div>
+      <div class="flex gap-3">
+        <button class="btn-doodle btn-update" onclick="submitUpdate()">✅ Update</button>
+        <button class="btn-doodle btn-gray"   onclick="closeModal()">❌ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Override renderList to use doodle style
+    window._renderListDoodle = function(data) {
+      const list = document.getElementById('password-list');
+
+      if (!data.length) {
+        list.innerHTML = '<div class="empty-state">📭 nothing here yet... add some secrets!</div>';
+        return;
+      }
+
+      list.innerHTML = data.map(p => `
+        <div class="password-item">
+          <span style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.15rem; color:#1a1209; min-width:110px;">
+            🔑 ${p.id}
+          </span>
+          <span class="pass-badge" id="pass-${p.id}">${p.password}</span>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn-doodle btn-copy"   onclick="copyPassword('${p.id}', '${p.password}')">📋 Copy</button>
+            <button class="btn-doodle btn-edit"   onclick="openModal('${p.id}', '${p.password}')">✏️</button>
+            <button class="btn-doodle btn-delete" onclick="deletePassword('${p.id}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    };
+  </script>
+
+  <script src="script.js"></script>
+
+  <script>
+    // Patch renderList after script.js loads
+    const _origRender = window.renderList;
+    window.renderList = window._renderListDoodle;
+  </script>
+
+</body>
+</html>

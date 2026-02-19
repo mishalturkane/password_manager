@@ -1,18 +1,27 @@
 mod db;
+mod crypto;
 mod models;
 mod repository;
-mod cli;
+mod handlers;
+mod routes;
+
+use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
-    // Load .env file
     dotenvy::dotenv().ok();
 
-    println!("🔐 Starting Password Manager...");
+    println!("🔐 Starting Password Manager V2...");
 
-    // Auto create DB + table if not exists → then connect
+    // Auto create DB + table
     let pool = db::init_db().await;
 
-    // Run CLI
-    cli::run(&pool).await;
+    // Build app with routes
+    let app = routes::create_routes(pool);
+
+    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
+    println!("🚀 Server running at http://localhost:8080");
+
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
