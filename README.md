@@ -1,16 +1,17 @@
 # 🔐 Password Manager
 
-A password manager built in **Rust** with two versions — a CLI app and a Web app.
+A password manager built in **Rust** — from a CLI app to a full Web App with REST API.
+
+> Built as a learning project to explore Rust, Axum, PostgreSQL, and AES encryption.
 
 ---
 
 ## 📦 Versions
 
-### V1 — CLI App (`main` branch)
-A terminal-based password manager using Rust + PostgreSQL.
-
-### V2 — Web App (`v2-web-app` branch)
-A full web app with Axum REST API + Doodle-style HTML/CSS frontend.
+| Version | Type | Branch |
+|---|---|---|
+| **V1** | CLI Terminal App | `main` |
+| **V2** | Web App (Axum + HTML) | `main` (merged) |
 
 ---
 
@@ -19,32 +20,34 @@ A full web app with Axum REST API + Doodle-style HTML/CSS frontend.
 | Layer | Technology |
 |---|---|
 | Language | Rust 🦀 |
-| Backend (V2) | Axum |
+| Backend | Axum |
 | Database | PostgreSQL |
 | DB Library | SQLx |
 | Encryption | AES-256 (magic-crypt) |
-| Frontend (V2) | Plain HTML + Tailwind CSS 4 + Vanilla JS |
+| Frontend | Plain HTML + Tailwind CSS 4 + Vanilla JS |
 | Fonts | Poppins + Space Grotesk |
+| Runtime | Tokio (async) |
 
 ---
 
 ## ✨ Features
 
-### V1 CLI
+### V1 — CLI
 - ➕ Add password
 - 🔍 Get password by ID
-- 📋 List all IDs
+- 📋 List all passwords
 - ✏️ Update ID and/or password
 - 🗑️ Delete password
 - ⚡ Auto creates DB and table on first run
 
-### V2 Web App
+### V2 — Web App
 - 🔐 AES-256 encrypted passwords in database
+- 🌐 REST API with Axum
 - 🔍 Live search by ID
-- 📋 One-click copy password
-- ✏️ Update password via modal
+- 📋 One-click copy password to clipboard
+- ✏️ Update password via modal popup
 - 🗑️ Delete password
-- 🎨 Doodle-style UI
+- 🎨 Doodle-style UI (Tailwind CSS 4)
 - ⚡ Auto creates DB and table on first run
 
 ---
@@ -52,7 +55,7 @@ A full web app with Axum REST API + Doodle-style HTML/CSS frontend.
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Rust installed → [rustup.rs](https://rustup.rs)
+- Rust → [rustup.rs](https://rustup.rs)
 - PostgreSQL installed and running
 
 ### 1. Clone the repo
@@ -66,65 +69,53 @@ cd password_manager
 
 ```env
 DATABASE_URL=postgres://postgres:yourpassword@localhost:5432/password_manager_db
-ENCRYPTION_KEY=your_secret_key_here        # V2 only
+ENCRYPTION_KEY=your_strong_secret_key_here
 ```
 
 ### 3. Run V1 (CLI)
 
 ```bash
-git checkout main
-cargo run
+cargo run --bin password_manager
 ```
 
 ### 4. Run V2 (Web App)
 
 ```bash
-git checkout v2-web-app
 cargo run
 ```
 
-Then open → `http://localhost:8080`
+Then open browser → `http://localhost:8080`
 
-> ✅ Database and table are created automatically on first run — no manual SQL needed!
+> ✅ No manual SQL needed — DB and table are created automatically on first run!
 
 ---
 
 ## 📁 Project Structure
 
-### V1 — CLI
 ```
-src/
-├── main.rs
-├── db.rs
-├── crypto.rs
-├── models/
-│   └── password.rs
-├── repository/
-│   └── password_repo.rs
-└── cli/
-    ├── mod.rs
-    ├── handlers.rs
-    └── input.rs
-```
-
-### V2 — Web App
-```
-src/
-├── main.rs
-├── db.rs
-├── crypto.rs
-├── models/
-│   └── password.rs
-├── repository/
-│   └── password_repo.rs
-├── handlers/
-│   └── password_handler.rs
-└── routes/
-    └── mod.rs
-static/
-├── index.html
-├── style.css
-└── script.js
+password_manager/
+├── Cargo.toml
+├── .env
+├── static/                        # V2 Frontend
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── src/
+    ├── main.rs                    # Entry point
+    ├── db.rs                      # Auto DB + table setup
+    ├── crypto.rs                  # AES-256 encrypt/decrypt
+    ├── models/
+    │   └── password.rs            # Structs
+    ├── repository/
+    │   └── password_repo.rs       # All DB queries
+    ├── handlers/
+    │   └── password_handler.rs    # Axum route handlers
+    ├── routes/
+    │   └── mod.rs                 # Route definitions
+    └── cli/                       # V1 CLI
+        ├── mod.rs
+        ├── handlers.rs
+        └── input.rs
 ```
 
 ---
@@ -144,9 +135,18 @@ static/
 
 ## 🔐 Security Note
 
-Passwords are stored **AES-256 encrypted** in the database. Plain text is never stored. Set a strong `ENCRYPTION_KEY` in your `.env` file.
+Passwords are stored **AES-256 encrypted** in the database — plain text is never stored.
 
-> ⚠️ This project is for learning purposes. For production use, consider adding authentication.
+> ⚠️ This is a learning project. For production, consider adding authentication (JWT) and HTTPS.
+
+---
+
+## 🗺️ Roadmap
+
+- [x] V1 — CLI CRUD with PostgreSQL
+- [x] V2 — Web App with Axum REST API + Doodle UI
+- [ ] V3 — Auth (Login/Register with JWT)
+- [ ] V4 — Deploy on Railway / Render
 
 ---
 
