@@ -226,12 +226,22 @@
       font-style: italic;
     }
 
-    /* Footer */
+    /* Footer — hidden by default, shows on scroll */
     .footer {
       border-top: 2px dashed #c8b89a;
       margin-top: 40px;
       padding: 24px 0 16px;
       text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    .footer.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
     }
 
     .tech-badge {
@@ -260,7 +270,7 @@
     </p>
   </div>
 
-  <div class="max-w-2xl mx-auto flex flex-col gap-7">
+  <div class="max-w-2xl mx-auto flex flex-col gap-7 min-h-screen">
 
     <!-- Add Password Card -->
     <div class="relative bg-white doodle-border p-6 tape">
@@ -420,5 +430,21 @@
     window.renderList = window._renderListDoodle;
   </script>
 
+
+  <script>
+    // Show footer only when scrolled to bottom
+    const footer = document.querySelector('.footer');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          footer.classList.add('visible');
+        } else {
+          footer.classList.remove('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(footer);
+  </script>
 </body>
 </html>
