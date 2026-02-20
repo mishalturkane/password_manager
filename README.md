@@ -4,14 +4,20 @@ A password manager built in **Rust** — from a CLI app to a full Web App with R
 
 > Built as a learning project to explore Rust, Axum, PostgreSQL, and AES encryption.
 
+## 🌐 Live Demo
+
+**[https://password-manager.mishalturkane.xyz/](https://password-manager.mishalturkane.xyz/)**
+
+> Hosted on Render · PostgreSQL on Render · Custom domain via GoDaddy
+
 ---
 
 ## 📦 Versions
 
-| Version | Type | Branch |
+| Version | Type | Status |
 |---|---|---|
-| **V1** | CLI Terminal App | `main` |
-| **V2** | Web App (Axum + HTML) | `main` (merged) |
+| **V1** | CLI Terminal App | ✅ Done |
+| **V2** | Web App (Axum + HTML) | ✅ Live |
 
 ---
 
@@ -27,6 +33,8 @@ A password manager built in **Rust** — from a CLI app to a full Web App with R
 | Frontend | Plain HTML + Tailwind CSS 4 + Vanilla JS |
 | Fonts | Poppins + Space Grotesk |
 | Runtime | Tokio (async) |
+| Hosting | Render |
+| Domain | GoDaddy → mishalturkane.xyz |
 
 ---
 
@@ -45,10 +53,12 @@ A password manager built in **Rust** — from a CLI app to a full Web App with R
 - 🌐 REST API with Axum
 - 🔍 Live search by ID
 - 📋 One-click copy password to clipboard
+- 👁️ Show/hide password toggle
 - ✏️ Update password via modal popup
 - 🗑️ Delete password
 - 🎨 Doodle-style UI (Tailwind CSS 4)
 - ⚡ Auto creates DB and table on first run
+- 🚀 Deployed on Render with custom domain
 
 ---
 
@@ -70,6 +80,7 @@ cd password_manager
 ```env
 DATABASE_URL=postgres://postgres:yourpassword@localhost:5432/password_manager_db
 ENCRYPTION_KEY=your_strong_secret_key_here
+PORT=8080
 ```
 
 ### 3. Run V1 (CLI)
@@ -95,6 +106,7 @@ Then open browser → `http://localhost:8080`
 ```
 password_manager/
 ├── Cargo.toml
+├── Dockerfile
 ├── .env
 ├── static/                        # V2 Frontend
 │   ├── index.html
@@ -145,15 +157,16 @@ Passwords are stored **AES-256 encrypted** in the database — plain text is nev
 
 - [x] V1 — CLI CRUD with PostgreSQL
 - [x] V2 — Web App with Axum REST API + Doodle UI
+- [x] Deploy on Render with custom domain
 - [ ] V3 — Auth (Login/Register with JWT)
-- [ ] V4 — Deploy on Railway / Render
 
 ---
 
 ## 👨‍💻 Author
 
 **Mishal Turkane**
-- GitHub → [@mishalturkane](https://github.com/mishalturkane)
+- 🌐 Portfolio → [mishalturkane.xyz](https://www.mishalturkane.xyz/)
+- 🐙 GitHub → [@mishalturkane](https://github.com/mishalturkane)
 
 ---
 
